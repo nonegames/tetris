@@ -1,6 +1,27 @@
 import shapes from './shapes'
 import { randomIndex, randomItem } from './utils'
 
+/**
+ * 游戏面板宽度，即水平方向方格数量
+ */
+export const BOARD_W = 10
+/**
+ * 游戏面板高度，即垂直方向方格数量
+ */
+export const BOARD_H = 20
+/**
+ * 一个小格子的尺寸
+ */
+export const CEIL_SIZE = 20
+
+/**
+ * 形状名称
+ */
+type ShapeName = keyof typeof shapes
+
+/**
+ * 游戏类
+ */
 export class Game {
   /**
    * canvas 的context对象
@@ -11,22 +32,21 @@ export class Game {
    */
   score = 0
   /**
-   * 当前形状
+   * 当前形状名称
    */
-  theShape = {
-    // 形状名称
-    name: '',
-    // 形状方向，索引值
-    direction: 0,
-  }
+  shapeN: ShapeName = 'T'
+  /**
+   * 当前形状方向
+   */
+  shapeD: number = 0
   /**
    * 形状当前位置 [x, y]
    */
-  shapePos = [0, 0]
+  shapePos: [x: number, y: number] = [0, 0]
   /**
    * 游戏板面
    */
-  board = Array(200).fill(0)
+  board: number[] = Array(BOARD_W * BOARD_H).fill(0)
 
   /**
    * requestAnimationFrame的id
@@ -45,8 +65,66 @@ export class Game {
     const shapeNames = Object.keys(shapes) as Array<keyof typeof shapes>
     // 随机挑选一个
     const name = randomItem<keyof typeof shapes>(shapeNames)
-    this.theShape.name = name
-    this.theShape.direction = randomIndex(shapes[name].length)
+    this.shapeN = name
+    this.shapeD = randomIndex(shapes[name].length)
+  }
+
+  /**
+   * 合并形状至画板
+   */
+  combine() {
+    const [x, y] = this.shapePos
+    const { shapeN: name, shapeD: direction } = this
+    const [w, h, ...shape] = shapes[name][direction]
+    const board = this.board.slice()
+
+    for(let row = y; row < y + h; row += 1) {
+      for(let col = x; col < x + w; col += 1) {
+        // 形状格子坐标
+        const sx = col - x
+        const sy = row - y
+        board[row * BOARD_W + col] = shape[sy * w + sx]
+      }
+    }
+
+    return board
+  }
+
+  /**
+   * 绘制一个小格子
+   */
+  drawCeil(x: number, y: number, solid: boolean = false) {
+    const { ctx } = this
+    if (!ctx) return
+
+    /**
+     * 绘制目标的坐标与宽高，留出1像素的缝隙
+     */
+    const cx = x * CEIL_SIZE + 1
+    const cy = y * CEIL_SIZE + 1
+    const cw = CEIL_SIZE - 2
+    const ch = CEIL_SIZE - 2
+
+    ctx.save()
+    ctx.fillStyle = solid ? '#000' : '#888'
+    ctx.fillRect(cx, cy, cw, ch)
+    ctx.restore()
+  }
+
+  draw() {
+    const { ctx } = this
+    if (!ctx) return
+    // 先清空canvas
+    ctx.clearRect(0, 0, BOARD_W * CEIL_SIZE, BOARD_H * CEIL_SIZE)
+    // 计算需要绘制的面板数据
+    const board = this.combine()
+    // 逐格绘制
+    for(let y = 0; y < BOARD_H; y += 1) {
+      for(let x = 0; x < BOARD_W; x += 1) {
+        const solid = board[y * BOARD_W + x] === 1
+        this.drawCeil(x, y, solid)
+      }
+    }
   }
 
   /**
@@ -64,6 +142,8 @@ export class Game {
    */
   process(time: number) {
 
+    // 需要重新绘制时
+    this.draw()
   }
   /**
    * 开始游戏
