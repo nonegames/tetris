@@ -145,6 +145,70 @@ export class Game {
     }
   }
 
+  canMove(d: 'l' | 'r' | 'd') {
+    const [shapeX, shapeY] = this.shapePos
+    const [w, h, ...shape] = shapes[this.shapeN][this.shapeD]
+    const { board } = this
+    // 目标坐标
+    let x, y
+
+    // 向左移动
+    if (d === 'l') {
+      x = shapeX - 1
+    } else if (d === 'r') {
+      x = shapeX + 1
+    } else {
+      x = shapeX
+    }
+
+    // 向下移动
+    if (d === 'd') {
+      y = shapeY + 1
+    } else {
+      y = shapeY
+    }
+
+    // 超出边界
+    if (x < 0 || x > BOARD_W - w || y > BOARD_H - h) {
+      return false
+    }
+
+    // 检测是否有碰撞
+    for(let row = y; row < y + h; row += 1) {
+      for(let col = x; col < x + w; col += 1) {
+        // 形状格子坐标
+        const sx = col - x
+        const sy = row - y
+        if (board[row * BOARD_W + col] * shape[sy * w + sx] !== 0) {
+          // 存在碰撞，返回false
+          return false
+        }
+      }
+    }
+
+    return true
+  }
+
+  /**
+   * 水平移到
+   * @param step 移动步数
+   */
+  moveX(d: 'l' | 'r') {
+    if (this.canMove(d)) {
+      if (d === 'l') {
+        this.shapePos[0] -= 1
+      } else if (d === 'r') {
+        this.shapePos[0] += 1
+      }
+    }
+  }
+
+  moveDown() {
+    if (this.canMove('d')) {
+      this.shapePos[1] += 1
+    }
+  }
+
   /**
    * 游戏循环
    * @param time 当前帧时间
