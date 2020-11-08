@@ -128,6 +128,24 @@ export class Game {
   }
 
   /**
+   * 旋转形状，即使用该形状的下一个方向数据
+   */
+  rotate() {
+    const shape = shapes[this.shapeN]
+    this.shapeD = (this.shapeD + 1) % shape.length
+    const [w, h] = shapes[this.shapeN][this.shapeD]
+    const [x, y] = this.shapePos
+    // 避免右侧超出
+    if (x > BOARD_W - w) {
+      this.shapePos[0] = BOARD_W - w
+    }
+    // 避免底部超出
+    if (y > BOARD_H - h) {
+      this.shapePos[1] = BOARD_H - h
+    }
+  }
+
+  /**
    * 游戏循环
    * @param time 当前帧时间
    */

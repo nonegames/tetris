@@ -46,7 +46,7 @@ function App() {
         <button>left</button>
         <button>right</button>
         <button>bottom</button>
-        <button>rotate</button>
+        <button onClick={() => game.rotate()}>rotate</button>
       </footer>
     </div>
   );
