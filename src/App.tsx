@@ -46,7 +46,7 @@ function App() {
         <button onClick={() => game.moveX('l')}>left</button>
         <button onClick={() => game.moveDown()}>down</button>
         <button onClick={() => game.moveX('r')}>right</button>
-        <button>bottom</button>
+        <button onClick={() => game.fallDown()}>bottom</button>
         <button onClick={() => game.rotate()}>rotate</button>
       </footer>
     </div>

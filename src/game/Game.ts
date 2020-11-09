@@ -53,6 +53,21 @@ export class Game {
    */
   rafId = 0
 
+  /**
+   * 上一次执行流程的时间
+   */
+  processTime: number | null = null
+
+  /**
+   * 执行流程需要等待的毫秒数
+   */
+  processWait: number = 1000
+
+  /**
+   * 正在
+   */
+  isFallingDown: boolean = false
+
   // 开始游戏时的回调函数
   onStart?: () => void = undefined
   // 游戏结束时的回调函数
@@ -67,6 +82,9 @@ export class Game {
     const name = randomItem<keyof typeof shapes>(shapeNames)
     this.shapeN = name
     this.shapeD = randomIndex(shapes[name].length)
+
+    this.processTime = null
+    this.shapePos = [randomIndex(BOARD_W - shapes[name][this.shapeD][0]), 0]
   }
 
   /**
@@ -83,7 +101,7 @@ export class Game {
         // 形状格子坐标
         const sx = col - x
         const sy = row - y
-        board[row * BOARD_W + col] = shape[sy * w + sx]
+        board[row * BOARD_W + col] = board[row * BOARD_W + col] + shape[sy * w + sx] > 0 ? 1 : 0
       }
     }
 
@@ -210,6 +228,13 @@ export class Game {
   }
 
   /**
+   * 开始直接到底，即快速下落
+   */
+  fallDown() {
+    this.isFallingDown = true
+  }
+
+  /**
    * 游戏循环
    * @param time 当前帧时间
    */
@@ -223,6 +248,25 @@ export class Game {
    * @param time 当前帧时间
    */
   process(time: number) {
+    if (this.processTime === null) {
+      this.processTime = time
+    } else if (this.isFallingDown || time - this.processTime >= this.processWait) {
+      this.processTime = time
+
+      if (this.canMove('d')) {
+        // 能够下落一格
+        this.shapePos[1] += 1
+      } else {
+        // 已经无法下降，处理相关逻辑
+        this.board = this.combine()
+        this.pickShape()
+        
+        // 解除快速下落模式
+        if (this.isFallingDown) {
+          this.isFallingDown = false
+        }
+      }
+    }
 
     // 需要重新绘制时
     this.draw()
