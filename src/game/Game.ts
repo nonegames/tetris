@@ -235,6 +235,32 @@ export class Game {
   }
 
   /**
+   * 检测游戏是否结束
+   * 当形状刚生成还未下落，且与当前面板中的方格发生碰撞，则表示游戏结束
+   */
+  testGameover() {
+    const [x, y] = this.shapePos
+    if (y > 0) return false
+
+    const [w, h, ...shape] = shapes[this.shapeN][this.shapeD]
+    
+    // 检测是否有碰撞
+    for(let row = y; row < y + h; row += 1) {
+      for(let col = x; col < x + w; col += 1) {
+        // 形状格子坐标
+        const sx = col - x
+        const sy = row - y
+        if (this.board[row * BOARD_W + col] * shape[sy * w + sx] !== 0) {
+          // 存在碰撞，游戏结束
+          return true
+        }
+      }
+    }
+
+    return false
+  }
+
+  /**
    * 游戏循环
    * @param time 当前帧时间
    */
@@ -248,6 +274,12 @@ export class Game {
    * @param time 当前帧时间
    */
   process(time: number) {
+    // 若游戏已经结束则直接退出
+    if (this.testGameover()) {
+      this.gameover()
+      return
+    }
+
     if (this.processTime === null) {
       this.processTime = time
     } else if (this.isFallingDown || time - this.processTime >= this.processWait) {
@@ -275,7 +307,9 @@ export class Game {
    * 开始游戏
    */
   start() {
+    this.board.fill(0)
     this.score = 0
+    this.isFallingDown = false
     this.pickShape()
     this.rafId = requestAnimationFrame((time) => this.loop(time))
 
