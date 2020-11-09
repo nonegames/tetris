@@ -72,6 +72,8 @@ export class Game {
   onStart?: () => void = undefined
   // 游戏结束时的回调函数
   onGameover?: () => void = undefined
+  // 分数改变时的回调
+  onScoreChange?: (score: number) => void = undefined
 
   /**
    * 随机选择一个形状
@@ -261,6 +263,37 @@ export class Game {
   }
 
   /**
+   * 处理计分与整理面板
+   */
+  dealScore() {
+    const scoreRows: number[] = []
+    for(let row = 0; row < BOARD_H; row += 1) {
+      let rowResult = 1
+      for(let col = 0; col < BOARD_W; col += 1) {
+        rowResult *= this.board[row * BOARD_W + col]
+      }
+      if (rowResult > 0) {
+        scoreRows.push(row)
+      }
+    }
+
+    if (scoreRows.length > 0) {
+      // 每行10分
+      this.score += scoreRows.length * 10
+      // 通知UI更新得分
+      if (this.onScoreChange) {
+        this.onScoreChange.call(undefined, this.score)
+      }
+      // 消除满行
+      scoreRows.reverse().forEach((scoreRowIndex) => {
+        this.board.splice(scoreRowIndex * BOARD_W, BOARD_W)
+      })
+      // 补充新行
+      this.board = Array<number>(scoreRows.length * BOARD_W).fill(0).concat(this.board)
+    }
+  }
+
+  /**
    * 游戏循环
    * @param time 当前帧时间
    */
@@ -291,6 +324,7 @@ export class Game {
       } else {
         // 已经无法下降，处理相关逻辑
         this.board = this.combine()
+        this.dealScore()
         this.pickShape()
         
         // 解除快速下落模式

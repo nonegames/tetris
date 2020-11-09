@@ -9,6 +9,7 @@ function App() {
   // canvas元素的引用
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const [running, setRunning] = useState(false)
+  const [score, setScore] = useState(0)
 
   // 绑定canvas元素的"ctx"到game
   useEffect(() => {
@@ -19,12 +20,13 @@ function App() {
     game.onGameover = () => {
       setRunning(false)
     }
+    game.onScoreChange = setScore
   }, [])
 
   return (
     <div className="App">
       <header>
-        Score: 100
+        Score: {score}
       </header>
       <section>
         <canvas
