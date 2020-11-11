@@ -34,15 +34,15 @@ export class Game {
   /**
    * 当前形状名称
    */
-  shapeN: ShapeName = 'T'
+  shapeN: ShapeName = 'L'
   /**
    * 当前形状方向
    */
-  shapeD: number = 0
+  shapeD: number = 1
   /**
    * 形状当前位置 [x, y]
    */
-  shapePos: [x: number, y: number] = [0, 0]
+  shapePos: [x: number, y: number] = [3, 6]
   /**
    * 游戏板面
    */

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import './icon.css'
 import './App.css'
 import { Game } from './game'
 
@@ -21,12 +22,15 @@ function App() {
       setRunning(false)
     }
     game.onScoreChange = setScore
+
+    // 绘制面板
+    game.draw()
   }, [])
 
   return (
     <div className="App">
       <header>
-        Score: {score}
+        SCORE: {score}
       </header>
       <section>
         <canvas
@@ -41,15 +45,16 @@ function App() {
             onClick={() => {
               game.start()
             }}
-          >开始游戏</button>
+          >START GAME</button>
         )}
       </section>
       <footer>
-        <button onClick={() => game.moveX('l')}>left</button>
-        <button onClick={() => game.moveDown()}>down</button>
-        <button onClick={() => game.moveX('r')}>right</button>
-        <button onClick={() => game.fallDown()}>bottom</button>
-        <button onClick={() => game.rotate()}>rotate</button>
+        <button className='iconfont icon-arrow-left' onClick={() => game.moveX('l')}></button>
+        <button className='iconfont icon-arrow-down' onClick={() => game.moveDown()}></button>
+        <button className='iconfont icon-arrow-right' onClick={() => game.moveX('r')}></button>
+        <span>&nbsp;&nbsp;</span>
+        <button className='iconfont icon-arrow-bottom' onClick={() => game.fallDown()}></button>
+        <button className='iconfont icon-arrow-rotate' onClick={() => game.rotate()}></button>
       </footer>
     </div>
   );
