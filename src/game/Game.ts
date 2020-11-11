@@ -93,16 +93,22 @@ export class Game {
    * 合并形状至画板
    */
   combine() {
+    // 当前形状坐标
     const [x, y] = this.shapePos
+    // 当前形状名称与方向
     const { shapeN: name, shapeD: direction } = this
+    // 当前形状的宽高与数据
     const [w, h, ...shape] = shapes[name][direction]
+    // 当前画板数据
     const board = this.board.slice()
 
+    // 遍历画板中与形状重合的坐标数据
     for(let row = y; row < y + h; row += 1) {
       for(let col = x; col < x + w; col += 1) {
         // 形状格子坐标
         const sx = col - x
         const sy = row - y
+        // 计算该坐标下画板的值
         board[row * BOARD_W + col] = board[row * BOARD_W + col] + shape[sy * w + sx] > 0 ? 1 : 0
       }
     }
@@ -131,6 +137,9 @@ export class Game {
     ctx.restore()
   }
 
+  /**
+   * 绘制画板
+   */
   draw() {
     const { ctx } = this
     if (!ctx) return
@@ -165,17 +174,25 @@ export class Game {
     }
   }
 
+  /**
+   * 判断是否能向某个方向移动
+   * @param d 移动方向
+   */
   canMove(d: 'l' | 'r' | 'd') {
+    // 当前形状的坐标
     const [shapeX, shapeY] = this.shapePos
+    // 当前形状数据
     const [w, h, ...shape] = shapes[this.shapeN][this.shapeD]
     const { board } = this
     // 目标坐标
     let x, y
 
-    // 向左移动
+    // 水平方向的移动
     if (d === 'l') {
+      // 向左移动
       x = shapeX - 1
     } else if (d === 'r') {
+      // 向右移动
       x = shapeX + 1
     } else {
       x = shapeX
@@ -211,7 +228,7 @@ export class Game {
 
   /**
    * 水平移到
-   * @param step 移动步数
+   * @param d 移动方向
    */
   moveX(d: 'l' | 'r') {
     if (this.canMove(d)) {
@@ -222,7 +239,9 @@ export class Game {
       }
     }
   }
-
+  /**
+   * 向下移动
+   */
   moveDown() {
     if (this.canMove('d')) {
       this.shapePos[1] += 1
@@ -334,7 +353,7 @@ export class Game {
       }
     }
 
-    // 需要重新绘制时
+    // 重新绘制
     this.draw()
   }
   /**
