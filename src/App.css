@@ -2,31 +2,29 @@
   margin: 20px auto;
   position: relative;
   width: 280px;
-  height: 500px;
   background-color: rgb(236, 229, 221);
-  display: flex;
-  flex-direction: column;
 }
 
 .App > header {
-  height: 50px;
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
+  padding: 5px 10px;
   font-size: 24px;
+}
+
+.App > header > .score-label {
+  font-size: 20px;
+  vertical-align: baseline;
+}
+.App > header > .score-value {
+  font-size: 32px;
 }
 
 .App > section {
   position: relative;
-  height: 0;
-  flex: 1 0 auto;
   background-color: rgb(102, 98, 98);
 }
 
 .App > footer {
   height: 50px;
-  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
@@ -52,16 +50,33 @@
 #game-renderer {
   display: block;
   margin: 0 auto;
-  width: 200px;
-  height: 400px;
+  width: 201px;
+  height: 401px;
 }
 
 #btnStart {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   color: rgb(80, 79, 79);
   font-size: 20px;
   box-shadow: inset 0 0 2px rgb(235, 195, 16);
+}
+
+.popup-box {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0,0,0,0.25);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup-box > .gameover-msg {
+  font-size: 60px;
+  color: #fff;
+  padding: 5px;
+
 }

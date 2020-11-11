@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import './icon.css'
 import './App.css'
 import { Game } from './game'
+import Popup from './Popup'
 
 // Game实例
 const game = new Game()
@@ -9,6 +10,7 @@ const game = new Game()
 function App() {
   // canvas元素的引用
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const [isGameover, setIsGameover] = useState(false)
   const [running, setRunning] = useState(false)
   const [score, setScore] = useState(0)
 
@@ -20,6 +22,7 @@ function App() {
     }
     game.onGameover = () => {
       setRunning(false)
+      setIsGameover(true)
     }
     game.onScoreChange = setScore
 
@@ -30,7 +33,8 @@ function App() {
   return (
     <div className="App">
       <header>
-        SCORE: {score}
+        <span className="score-label">SCORE: </span>
+        <span className="score-value">{score}</span>
       </header>
       <section>
         <canvas
@@ -40,12 +44,7 @@ function App() {
           ref={canvasRef}
         ></canvas>
         {running ? null : (
-          <button
-            id='btnStart'
-            onClick={() => {
-              game.start()
-            }}
-          >START GAME</button>
+          <Popup game={game} isGameover={isGameover} />
         )}
       </section>
       <footer>
