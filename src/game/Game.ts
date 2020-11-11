@@ -128,12 +128,26 @@ export class Game {
      */
     const cx = x * CEIL_SIZE + 1
     const cy = y * CEIL_SIZE + 1
-    const cw = CEIL_SIZE - 2
-    const ch = CEIL_SIZE - 2
+    const cw = CEIL_SIZE - 1
+    const ch = CEIL_SIZE - 1
+
+    const borderSize = 2
 
     ctx.save()
-    ctx.fillStyle = solid ? '#000' : '#888'
-    ctx.fillRect(cx, cy, cw, ch)
+    if (solid) {
+      ctx.fillStyle = '#444'
+      ctx.fillRect(cx, cy, cw, ch)
+
+      ctx.fillStyle = '#666'
+      ctx.fillRect(cx + borderSize, cy + borderSize, cw - 2 * borderSize, ch - 2 * borderSize)
+
+      ctx.fillStyle = '#444'
+      ctx.fillRect(cx + 2 * borderSize, cy +  2 * borderSize, cw - 4 * borderSize, ch - 4 * borderSize)
+
+    } else {
+      ctx.fillStyle = '#bbb'
+      ctx.fillRect(cx, cy, cw, ch)
+    }
     ctx.restore()
   }
 

@@ -35,8 +35,8 @@ function App() {
       <section>
         <canvas
           id="game-renderer"
-          width={200}
-          height={400}
+          width={201}
+          height={401}
           ref={canvasRef}
         ></canvas>
         {running ? null : (
