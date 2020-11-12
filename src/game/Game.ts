@@ -68,6 +68,11 @@ export class Game {
    */
   isFallingDown: boolean = false
 
+  /**
+   * 标记游戏是否正在进行
+   */
+  isPlaying: boolean = false
+
   // 开始游戏时的回调函数
   onStart?: () => void = undefined
   // 游戏结束时的回调函数
@@ -374,6 +379,7 @@ export class Game {
    * 开始游戏
    */
   start() {
+    this.isPlaying = true
     this.board.fill(0)
     this.score = 0
     this.isFallingDown = false
@@ -388,6 +394,7 @@ export class Game {
    * 游戏结束
    */
   gameover() {
+    this.isPlaying = false
     cancelAnimationFrame(this.rafId)
 
     if (this.onGameover) {

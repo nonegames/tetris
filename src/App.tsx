@@ -3,6 +3,7 @@ import './icon.css'
 import './App.css'
 import { Game } from './game'
 import Popup from './Popup'
+import keycode from 'keycode'
 
 // Game实例
 const game = new Game()
@@ -28,6 +29,44 @@ function App() {
 
     // 绘制面板
     game.draw()
+  }, [])
+
+  // 监听键盘事件
+  useEffect(() => {
+    const onKeydown = (e: KeyboardEvent) => {
+      e.preventDefault()
+      
+      switch(keycode(e)) {
+        case 'left':
+        case 'a':
+          game.moveX('l')
+          break
+        case 'right':
+        case 'd':
+          game.moveX('r')
+          break
+        case 'down':
+        case 's':
+          game.moveDown()
+          break
+        case 'up':
+        case 'w':
+        case 'r':
+          game.rotate()
+          break
+        case 'enter':
+        case 'space':
+          if (game.isPlaying) {
+            game.fallDown()
+          } else {
+            game.start()
+          }
+      }
+    }
+
+    document.addEventListener('keydown', onKeydown)
+
+    return () => document.removeEventListener('keydown', onKeydown)
   }, [])
 
   return (
